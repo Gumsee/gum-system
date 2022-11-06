@@ -9,13 +9,12 @@ add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC})
 
 include_directories(${CMAKE_SOURCE_DIR}/external/)
 
-
-#Try to print this one
+ 
 if(GUMMATHS_FOUND)
     include_directories(${GUMMATHS_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR Library for GUMMATHS cannot not found)
 endif()
-
-message(${GUMMATHS_INCLUDE_DIRS})
              
 
  

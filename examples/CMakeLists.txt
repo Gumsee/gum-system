@@ -18,6 +18,8 @@ list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
  
 if(GUMMATHS_FOUND)
     list(APPEND GUM_LIBRARIES "${GUMMATHS_LIBRARIES}")
+else()
+    message(FATAL_ERROR Library for GUMMATHS cannot not found)
 endif()
              
 
@@ -25,6 +27,8 @@ include_directories(${CMAKE_SOURCE_DIR}/src/)
  
 if(GUMMATHS_FOUND)
     include_directories(${GUMMATHS_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR Library for GUMMATHS cannot not found)
 endif()
              
 
