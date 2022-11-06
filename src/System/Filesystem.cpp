@@ -125,10 +125,13 @@ namespace Filesystem {
             
             do
             {
+                std::string name = w32FindData.cFileName;
+                if(name == ".." || name == ".") { continue; }
+
                 File file;
-                file.type = nativeTypeToFiletype(direcory + "\\" + w32FindData.cFileName, w32FindData.dwFileAttributes);
+                file.type = nativeTypeToFiletype(directory + "\\" + name, w32FindData.dwFileAttributes);
                 file.path = directory;
-                file.name = w32FindData.cFileName;
+                file.name = name;
                 func(file);
             }
             while(FindNextFile(hFind, &w32FindData));
