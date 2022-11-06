@@ -126,7 +126,7 @@ namespace Filesystem {
             do
             {
                 File file;
-                file.type = nativeTypeToFiletype(w32FindData.dwFileAttributes);
+                file.type = nativeTypeToFiletype(direcory + "\\" + w32FindData.cFileName, w32FindData.dwFileAttributes);
                 file.path = directory;
                 file.name = w32FindData.cFileName;
                 func(file);
@@ -148,7 +148,7 @@ namespace Filesystem {
                 if(name == ".." || name == ".") { continue; }
                 
                 File file;
-                file.type = nativeTypeToFiletype(type);
+                file.type = nativeTypeToFiletype(directory + "/" + name, type);
                 file.path = directory;
                 file.name = name;
                 func(file);
@@ -158,7 +158,7 @@ namespace Filesystem {
         #endif
     }
 
-    FILETYPE nativeTypeToFiletype(unsigned long nativeData)
+    FILETYPE nativeTypeToFiletype(std::string path, unsigned long nativeData)
     {
         #if (GUM_OS_WINDOWS)
             if     (nativeData & FILE_ATTRIBUTE_DIRECTORY)     { return FILETYPE::DIRECTORY; }
