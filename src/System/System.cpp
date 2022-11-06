@@ -1,6 +1,11 @@
 #include "System.h"
 #include <signal.h>
-#include <dlfcn.h>
+
+#if(GUM_OS_WINDOWS)
+    //TODO
+#elif(GUM_OS_LINUX)
+    #include <dlfcn.h>
+#endif
 
 namespace Gum {
 namespace System {
@@ -14,11 +19,15 @@ namespace System {
 
     void init()
     {
-        struct sigaction sigIntHandler;
-        sigIntHandler.sa_handler = interruptHandler;
-        sigemptyset(&sigIntHandler.sa_mask);
-        sigIntHandler.sa_flags = 0;
-        sigaction(SIGINT, &sigIntHandler, NULL);
+        #if(GUM_OS_WINDOWS)
+            //TODO
+        #elif(GUM_OS_LINUX)
+            struct sigaction sigIntHandler;
+            sigIntHandler.sa_handler = interruptHandler;
+            sigemptyset(&sigIntHandler.sa_mask);
+            sigIntHandler.sa_flags = 0;
+            sigaction(SIGINT, &sigIntHandler, NULL);
+        #endif
     }
 
     void onInterruptSignal(std::function<void(int)> callback)
@@ -29,12 +38,22 @@ namespace System {
 
     void* loadDynamicLibrary(std::string filepath)
     {
-        return dlopen(filepath.c_str(), RTLD_LAZY | RTLD_LOCAL);
+        #if(GUM_OS_WINDOWS)
+            //TODO
+        #elif(GUM_OS_LINUX)
+            return dlopen(filepath.c_str(), RTLD_LAZY | RTLD_LOCAL);
+        #endif
+        
+        return nullptr;
     }
 
     void freeDynamicLibrary(void* module)
     {
-        dlclose(module);
+        #if(GUM_OS_WINDOWS)
+            //TODO
+        #elif(GUM_OS_LINUX)
+            dlclose(module);
+        #endif
     }
 
 }};

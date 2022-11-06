@@ -4,9 +4,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "Output.h"
+#include <algorithm>
 
 #if(GUM_OS_WINDOWS)
     #include <stdlib.h>
+    #include <Windows.h>
 
 #elif(GUM_OS_SOLARIS)
     #include <stdlib.h>
@@ -67,9 +69,12 @@ namespace Filesystem {
     std::string getExecutablePath()
     {
         #if (GUM_OS_WINDOWS)
-            char *exePath;
-            if (_get_pgmptr(&exePath) != 0)
-                exePath = "";
+            char exePath[MAX_PATH];
+            GetModuleFileNameA(NULL, exePath, MAX_PATH);
+
+            //PathRemoveFileSpec(exePath);
+            //if (_get_pgmptr(&exePath) != 0)
+            //    exePath = "";
         #elif (GUM_OS_SOLARIS)
             char exePath[PATH_MAX];
             if (realpath(getexecname(), exePath) == NULL)
@@ -101,13 +106,34 @@ namespace Filesystem {
                 exePath[0] = '\0';
         #endif
         std::string exePathStr = std::string(exePath);
-        return exePathStr.substr(0, exePathStr.find_last_of('/'));
+        exePathStr = exePathStr.substr(0, exePathStr.find_last_of('/'));
+        exePathStr = exePathStr.substr(0, exePathStr.find_last_of('\\'));
+        return exePathStr;
     }
 
     void iterateThroughDirectory(std::string directory, std::function<void(File entry)> func)
     {
         #if (GUM_OS_WINDOWS)
-            //TODO
+            WIN32_FIND_DATA w32FindData;
+            HANDLE hFind;
+            hFind = FindFirstFile((directory + "/*.*").c_str(), &w32FindData);
+            if(hFind == INVALID_HANDLE_VALUE)
+            {
+                Gum::Output::error("FindFirstFile failed: " + GetLastError());
+                return;
+            }
+            
+            do
+            {
+                File file;
+                file.type = nativeTypeToFiletype(w32FindData.dwFileAttributes);
+                file.path = directory;
+                file.name = w32FindData.cFileName;
+                func(file);
+            }
+            while(FindNextFile(hFind, &w32FindData));
+
+            FindClose(hFind);
         #elif (GUM_OS_LINUX)
             struct dirent *pDirent = nullptr;
             DIR *pDir = opendir(directory.c_str());
@@ -122,7 +148,7 @@ namespace Filesystem {
                 if(name == ".." || name == ".") { continue; }
                 
                 File file;
-                file.type = pathToFiletype(directory + "/" + name, type);
+                file.type = nativeTypeToFiletype(type);
                 file.path = directory;
                 file.name = name;
                 func(file);
@@ -132,10 +158,13 @@ namespace Filesystem {
         #endif
     }
 
-    FILETYPE pathToFiletype(std::string path, unsigned char nativeData)
+    FILETYPE nativeTypeToFiletype(unsigned long nativeData)
     {
         #if (GUM_OS_WINDOWS)
-            //TODO
+            if     (nativeData & FILE_ATTRIBUTE_DIRECTORY)     { return FILETYPE::DIRECTORY; }
+            else if(nativeData & FILE_ATTRIBUTE_DEVICE)        { return FILETYPE::CHARACTER_DEVICE; }
+            else if(nativeData & FILE_ATTRIBUTE_REPARSE_POINT) { return FILETYPE::LINK; }
+            else                                               { return FILETYPE::FILE; }
         #elif (GUM_OS_LINUX)
             unsigned char type = nativeData;
             if     (type == DT_DIR)  { return FILETYPE::DIRECTORY; }
@@ -175,5 +204,17 @@ namespace Filesystem {
             case FILETYPE::SOCKET:           return "socket";
             default:                         return "unknown";
         };
+    }
+    
+    std::string convertToNativePath(std::string path)
+    {
+        std::string retPath = path;
+        #if (GUM_OS_WINDOWS)
+            std::replace(retPath.begin(), retPath.end(), '/', '\\');
+        #else
+            std::replace(retPath.begin(), retPath.end(), '\\', '/');
+        #endif
+
+        return retPath;
     }
 }}

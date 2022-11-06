@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     std::string execDir = Gum::Filesystem::getExecutablePath();
 	Gum::Output::print("Current Executable directory: " + execDir);
 
-    std::string projDir = std::string(EXAMPLES_PATH) + "/..";
+    std::string projDir = Gum::Filesystem::convertToNativePath(std::string(EXAMPLES_PATH) + "/..");
     Gum::Output::print("Project directory contents ("+projDir+"):");
     Gum::Filesystem::iterateThroughDirectory(projDir, [](Gum::Filesystem::File file) {
         Gum::Output::print("    " + file.name + " (" + Gum::Filesystem::filetypeToString(file.type) + ")");

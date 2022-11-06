@@ -32,8 +32,10 @@ namespace Filesystem {
     extern void appendToFile(std::string filepath, std::string str);
     
     extern void iterateThroughDirectory(std::string directory, std::function<void(File entry)> func);
-    extern FILETYPE pathToFiletype(std::string path, unsigned char nativeData = 0);
+    extern FILETYPE nativeTypeToFiletype(unsigned long nativeData = 0);
     extern std::string filetypeToString(FILETYPE type);
 
     extern std::string getExecutablePath();
+
+    extern std::string convertToNativePath(std::string path);
 }}
