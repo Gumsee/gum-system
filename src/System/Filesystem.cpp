@@ -1,10 +1,8 @@
 #include "Filesystem.h"
 #include <fstream>
-#include <dirent.h>
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h> 
 #include "Output.h"
 
 #if(GUM_OS_WINDOWS)
@@ -17,6 +15,7 @@
 #elif(GUM_OS_LINUX)
     #include <unistd.h>
     #include <limits.h>
+    #include <dirent.h>
 
 #elif(GUM_OS_MACOS)
     #include <mach-o/dyld.h>
