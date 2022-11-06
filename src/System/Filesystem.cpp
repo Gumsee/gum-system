@@ -1,10 +1,8 @@
 #include "Filesystem.h"
 #include <fstream>
-#include <dirent.h>
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h> 
 #include "Output.h"
 
 #if(GUM_OS_WINDOWS)
@@ -17,6 +15,7 @@
 #elif(GUM_OS_LINUX)
     #include <unistd.h>
     #include <limits.h>
+    #include <dirent.h>
 
 #elif(GUM_OS_MACOS)
     #include <mach-o/dyld.h>
@@ -105,45 +104,76 @@ namespace Filesystem {
         return exePathStr.substr(0, exePathStr.find_last_of('/'));
     }
 
-    void iterateThroughDirectory(std::string directoy, std::function<void(File entry)> func)
+    void iterateThroughDirectory(std::string directory, std::function<void(File entry)> func)
     {
-        struct dirent *pDirent = nullptr;
-        DIR *pDir = opendir(directoy.c_str());
+        #if (GUM_OS_WINDOWS)
+            //TODO
+        #elif (GUM_OS_LINUX)
+            struct dirent *pDirent = nullptr;
+            DIR *pDir = opendir(directory.c_str());
 
-        if (pDir == nullptr)
-            return;
-            
-        while ((pDirent = readdir(pDir)) != nullptr) 
-        {
-            unsigned char type = pDirent->d_type;
-            std::string name = pDirent->d_name;
-            if(name == ".." || name == ".") { continue; }
-            
-            File file;
-            if     (type == DT_DIR)  { file.type = FILETYPE::DIRECTORY; }
-            else if(type == DT_REG)  { file.type = FILETYPE::FILE; }
-            else if(type == DT_FIFO) { file.type = FILETYPE::FIFO; }
-            else if(type == DT_BLK)  { file.type = FILETYPE::BLOCK_DEVICE; }
-            else if(type == DT_CHR)  { file.type = FILETYPE::CHARACTER_DEVICE; }
-            else if(type == DT_LNK)  { file.type = FILETYPE::LINK; }
-            else if(type == DT_SOCK) { file.type = FILETYPE::SOCKET; }
+            if (pDir == nullptr)
+                return;
+                
+            while ((pDirent = readdir(pDir)) != nullptr) 
+            {
+                unsigned char type = pDirent->d_type;
+                std::string name = pDirent->d_name;
+                if(name == ".." || name == ".") { continue; }
+                
+                File file;
+                file.type = pathToFiletype(directory + "/" + name, type);
+                file.path = directory;
+                file.name = name;
+                func(file);
+            }
+
+            closedir(pDir);
+        #endif
+    }
+
+    FILETYPE pathToFiletype(std::string path, unsigned char nativeData)
+    {
+        #if (GUM_OS_WINDOWS)
+            //TODO
+        #elif (GUM_OS_LINUX)
+            unsigned char type = nativeData;
+            if     (type == DT_DIR)  { return FILETYPE::DIRECTORY; }
+            else if(type == DT_REG)  { return FILETYPE::FILE; }
+            else if(type == DT_FIFO) { return FILETYPE::FIFO; }
+            else if(type == DT_BLK)  { return FILETYPE::BLOCK_DEVICE; }
+            else if(type == DT_CHR)  { return FILETYPE::CHARACTER_DEVICE; }
+            else if(type == DT_LNK)  { return FILETYPE::LINK; }
+            else if(type == DT_SOCK) { return FILETYPE::SOCKET; }
             else 
             {
                 struct stat retstat;
-                lstat((directoy + name).c_str(), &retstat);
-                if     (S_ISREG(retstat.st_mode))  { file.type = FILETYPE::FILE; }
-                else if(S_ISDIR(retstat.st_mode))  { file.type = FILETYPE::DIRECTORY; }
-                else if(S_ISFIFO(retstat.st_mode)) { file.type = FILETYPE::FIFO; }
-                else if(S_ISLNK(retstat.st_mode))  { file.type = FILETYPE::LINK; }
-                else if(S_ISSOCK(retstat.st_mode)) { file.type = FILETYPE::SOCKET; }
-                else if(S_ISBLK(retstat.st_mode))  { file.type = FILETYPE::BLOCK_DEVICE; }
-                else if(S_ISCHR(retstat.st_mode))  { file.type = FILETYPE::CHARACTER_DEVICE; }
+                lstat((path).c_str(), &retstat);
+                if     (S_ISREG(retstat.st_mode))  { return FILETYPE::FILE; }
+                else if(S_ISDIR(retstat.st_mode))  { return FILETYPE::DIRECTORY; }
+                else if(S_ISFIFO(retstat.st_mode)) { return FILETYPE::FIFO; }
+                else if(S_ISLNK(retstat.st_mode))  { return FILETYPE::LINK; }
+                else if(S_ISSOCK(retstat.st_mode)) { return FILETYPE::SOCKET; }
+                else if(S_ISBLK(retstat.st_mode))  { return FILETYPE::BLOCK_DEVICE; }
+                else if(S_ISCHR(retstat.st_mode))  { return FILETYPE::CHARACTER_DEVICE; }
             }
-            file.path = directoy;
-            file.name = name;
-            func(file);
-        }
+        #endif
 
-        closedir(pDir);
+        return FILETYPE::UNKNOWN;
+    }
+
+    std::string filetypeToString(FILETYPE type)
+    {
+        switch (type) 
+        {
+            case FILETYPE::DIRECTORY:        return "directory";
+            case FILETYPE::FILE:             return "file";
+            case FILETYPE::FIFO:             return "fifo";
+            case FILETYPE::BLOCK_DEVICE:     return "block device";
+            case FILETYPE::CHARACTER_DEVICE: return "character device";
+            case FILETYPE::LINK:             return "link";
+            case FILETYPE::SOCKET:           return "socket";
+            default:                         return "unknown";
+        };
     }
 }}
