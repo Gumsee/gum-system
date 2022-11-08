@@ -28,14 +28,14 @@ namespace Output
 	extern bool wasSuccessful();
 
     template<typename T>
-    static void print(T printable)
+    static inline void print(T printable)
     {
         std::cout << getCurrentTime() << " " << printable << "\n";
     }
 
-    template<typename T, unsigned int S>
-    static void print(tvec<T, S> printable)
-    {
-        std::cout << getCurrentTime() << " " << printable.toString() << "\n";
+    template<typename T, unsigned int S> 
+    static inline void print(tvec<T, S> printable) 
+    { 
+        std::cout << getCurrentTime() << " " << printable.toString() << "\n"; 
     }
 }}
