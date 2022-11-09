@@ -10,12 +10,12 @@ add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC})
 include_directories(${CMAKE_SOURCE_DIR}/external/)
 
  
-if(GUMMATHS_FOUND)
-    include_directories(${GUMMATHS_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR Library for GUMMATHS cannot not found)
-endif()
-             
+        list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME}) 
+        if(GUMMATHS_FOUND)
+            include_directories(${GUMMATHS_INCLUDE_DIRS})
+        else()
+            message(FATAL_ERROR Library for GUMMATHS cannot not found)
+        endif()
 
  
 
@@ -28,6 +28,18 @@ file(GLOB_RECURSE HEADERS System//*.h)
 install(
     FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System//
+) 
+
+file(GLOB_RECURSE HEADERS System/IO//*.h)
+install(
+    FILES ${HEADERS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System/IO//
+) 
+
+file(GLOB_RECURSE HEADERS System/DefaultIcon//*.h)
+install(
+    FILES ${HEADERS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System/DefaultIcon//
 )
 
 install(TARGETS ${CMAKE_PROJECT_NAME}
