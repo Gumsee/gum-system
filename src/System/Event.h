@@ -1,8 +1,4 @@
 #pragma once
-#if defined GUM_OS_LINUX || defined GUM_OS_BSD
-#include <X11/Xlib.h>
-#endif
-
 #include <Maths/vec.h>
 #include <list>
 
@@ -21,6 +17,7 @@
 #define GUM_EVENT_MOUSE_LEFT        0x00B
 #define GUM_EVENT_KEYBOARD_PRESSED  0x00C
 #define GUM_EVENT_KEYBOARD_RELEASED 0x00D
+#define GUM_EVENT_KEYBOARD_TEXT_ENTERED 0x00E
 
 namespace Gum {
 struct Event
@@ -44,9 +41,7 @@ struct Event
 
     void initNative();
 
-    #if defined GUM_OS_LINUX || defined GUM_OS_BSD
-        static std::list<Event> createFromNative(XEvent xevent);
-    #endif
+    static std::list<Event> createFromNative(void* event);
 
     Event()
     {

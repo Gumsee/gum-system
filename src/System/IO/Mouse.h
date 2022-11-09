@@ -88,6 +88,7 @@ namespace IO
         Mouse(Gum::Window* context);
         Mouse(Mouse& other) = delete;
         Mouse& operator=(Mouse& other) = delete;
+		~Mouse();
 
 		std::string DragAndDropInfo;
 

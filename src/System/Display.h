@@ -2,11 +2,6 @@
 #include "Monitor.h"
 #include <gum-maths.h>
 
-#if defined GUM_OS_LINUX || defined GUM_OS_BSD
-	#include <X11/Xutil.h>
-	#include <X11/Xlib.h>
-#endif
-
 namespace Gum {
 namespace Display
 {
@@ -21,9 +16,7 @@ namespace Display
 
     extern void setPrimaryMonitor(Monitor* monitor);
 
-    #if defined GUM_OS_LINUX || defined GUM_OS_BSD
-        extern ::Display* getSystemHandle();
-    #endif
+    extern void* getSystemHandle();
     extern std::vector<Monitor*> getMonitors();
     extern Monitor* getPrimaryMonitor();
 }}

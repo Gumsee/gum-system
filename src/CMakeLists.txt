@@ -6,11 +6,11 @@ file(GLOB_RECURSE SRC
 
 )
 add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC})
+add_library(${CMAKE_PROJECT_NAME}-shared SHARED ${SRC})
 
 include_directories(${CMAKE_SOURCE_DIR}/external/)
 
  
-        list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME}) 
         if(GUMMATHS_FOUND)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
         else()
@@ -41,6 +41,8 @@ install(
     FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System/DefaultIcon//
 )
+
+install(TARGETS ${CMAKE_PROJECT_NAME}-shared)
 
 install(TARGETS ${CMAKE_PROJECT_NAME}
     EXPORT ${CMAKE_PROJECT_NAME}Targets

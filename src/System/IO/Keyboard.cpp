@@ -195,6 +195,10 @@ namespace IO
             case GUM_EVENT_KEYBOARD_RELEASED:
                 keyboardReleaseCallback(event.data.keyboardkey, 0);
                 break;
+				
+			case GUM_EVENT_KEYBOARD_TEXT_ENTERED:
+				keyboardTextCallback(event.data.keyboardkey);
+				break;
         }
     }
 

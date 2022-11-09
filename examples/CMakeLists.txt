@@ -3,6 +3,7 @@ message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
  
+        list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME}) 
         if(GUMMATHS_FOUND)
             list(APPEND GUM_LIBRARIES ${GUMMATHS_LIBRARIES})
         else()
@@ -11,7 +12,6 @@ list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
  
-        list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME}) 
         if(GUMMATHS_FOUND)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
         else()
