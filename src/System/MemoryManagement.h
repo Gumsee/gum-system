@@ -3,7 +3,6 @@
 
 namespace Gum
 {
-
     /**
      * A safer alternative to delete
      */

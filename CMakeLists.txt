@@ -35,7 +35,7 @@ set (INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dist/${CMAKE_BUILD_TYPE}/bin/")
 if(DEFINED GUM_OS_LINUX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g3 -Wall -fdiagnostics-color=always")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wno-unused-parameter -Wno-reorder -Wno-pedantic")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0") #-Og
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fPIC") #-Og
 elseif(DEFINED GUM_OS_WINDOWS)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall")
     set (CMAKE_CXX_FLAGS "/JMC /permissive- /GS /W3 /Zc:wchar_t /ZI /Gm- /Od /sdl /Zc:inline /fp:precise /errorReport:prompt /WX- /Zc:forScope /Gd /MDd /FC /EHsc /nologo /diagnostics:column")

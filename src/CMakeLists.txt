@@ -6,7 +6,6 @@ file(GLOB_RECURSE SRC
 
 )
 add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC})
-add_library(${CMAKE_PROJECT_NAME}-shared SHARED ${SRC})
 
 include_directories(${CMAKE_SOURCE_DIR}/external/)
 
@@ -28,21 +27,9 @@ file(GLOB_RECURSE HEADERS System//*.h)
 install(
     FILES ${HEADERS}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System//
-) 
-
-file(GLOB_RECURSE HEADERS System/IO//*.h)
-install(
-    FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System/IO//
-) 
-
-file(GLOB_RECURSE HEADERS System/DefaultIcon//*.h)
-install(
-    FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}/System/DefaultIcon//
 )
 
-install(TARGETS ${CMAKE_PROJECT_NAME}-shared)
+
 
 install(TARGETS ${CMAKE_PROJECT_NAME}
     EXPORT ${CMAKE_PROJECT_NAME}Targets
