@@ -14,6 +14,11 @@ include_directories(${CMAKE_SOURCE_DIR}/external/)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
         else()
             message(FATAL_ERROR Library for GUMMATHS cannot not found)
+        endif() 
+        if(CURSES_FOUND)
+            include_directories(${CURSES_INCLUDE_DIRS})
+        else()
+            message(FATAL_ERROR Library for CURSES cannot not found)
         endif()
 
  

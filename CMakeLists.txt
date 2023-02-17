@@ -10,21 +10,29 @@ include(GNUInstallDirs)
 #Set OS
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_definitions(-DGUM_OS_LINUX)
+    add_definitions(-DGUM_OS_UNIX)
     set(GUM_OS_LINUX true)
+    set(GUM_OS_UNIX true)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DGUM_OS_WINDOWS)
+    add_definitions(-DGUM_OS_DOSBASED)
     set(GUM_OS_WINDOWS true)
+    set(GUM_OS_DOSBASED true)
 
     set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Gumlib/")
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_definitions(-DGUM_OS_MACOS)
+    add_definitions(-DGUM_OS_UNIX)
     set(GUM_OS_MACOS true)
+    set(GUM_OS_UNIX true)
 
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
     add_definitions(-DGUM_OS_BSD)
+    add_definitions(-DGUM_OS_UNIX)
     set(GUM_OS_BSD true)
+    set(GUM_OS_UNIX true)
 endif()
 
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
@@ -47,7 +55,8 @@ set(CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 message(STATUS "${CMAKE_PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
  
-    find_package(GumMaths REQUIRED)
+    find_package(GumMaths REQUIRED) 
+    find_package(Curses REQUIRED)
 
 #add_definitions(-DDEBUG)
 add_definitions(-DCHECK_GL_ERRORS)

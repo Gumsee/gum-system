@@ -96,6 +96,7 @@ namespace Output
             logfile.open(Debuglogfilepath, std::ios::app);
             logfile << getCurrentTime() << ("[Debug] " + message + "\n").c_str();
             logfile.close();
+            std::cout << getCurrentTime() << "[Debug] " + message + "\n";
         #endif
     }
 
