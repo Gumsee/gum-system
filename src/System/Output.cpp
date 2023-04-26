@@ -1,102 +1,85 @@
 #include "Output.h"
+#include "Filesystem.h"
 #define DEBUG 1
 
 namespace Gum {
 namespace Output
 {
-    std::ofstream logfile;
-    std::string logfilepath;
-    std::string Debuglogfilepath;
-    bool stoprunning = false;
-    clock_t t1,t2;
-	bool issuccessful = true;
+    std::string logfilepath = Gum::Filesystem::getExecutablePath() + "/gum.log";
 
-    void init(std::string logfilestr, std::string Debuglogfilestr)
+    void init(const std::string& logfilestr, const std::string& Debuglogfilestr)
     {
         Debuglogfilepath = Debuglogfilestr;
         logfilepath = logfilestr;
-        logfile.open(logfilepath);
-        logfile << "--- Default logfile Start ---\n";
-        logfile.close();
+
+        if(logfilepath == "")
+            logfilepath = Gum::Filesystem::getExecutablePath() + "/gum.log";
+        Gum::Filesystem::writeToFile(logfilepath, "--- Default logfile Start ---\n");
 
         if(Debuglogfilepath != "")
-        {
-            logfile.open(Debuglogfilepath);
-            logfile << "--- Debug logfile start ---\n";
-            logfile.close();
-        }
+            Gum::Filesystem::writeToFile(Debuglogfilepath, "--- Debug logfile start ---\n");
 
-        t1=clock();
     }
 
-    void log(std::string message)
+    void log(const std::string& message)
     {
-        logfile.open(logfilepath, std::ios::app);
-        logfile << getCurrentTime() << ("[Info] " + message + "\n").c_str();
-        logfile.close();
+        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Info] " + message + "\n");
     }
 
-    void error(std::string message)
+    void error(const std::string& message)
     {
-        logfile.open(logfilepath, std::ios::app);
-        logfile << getCurrentTime() << ("[Error] " + message + "\n").c_str();
-        logfile.close();
+        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Error] " + message + "\n");
         std::cerr << getCurrentTime() << " Error " + message + "\n";
         stoprunning = true;
     }
 
-    void fatal(std::string message)
+    void fatal(const std::string& message)
     {
-        logfile.open(logfilepath, std::ios::app);
-        logfile << getCurrentTime() << ("[Fatal] " + message + "\n").c_str();
-        logfile.close();
+        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Fatal] " + message + "\n");
         std::cout << getCurrentTime() << "[Fatal] " + message + "\n";
         stoprunning = true;
     }
 
-    void warn(std::string message)
+    void warn(const std::string& message)
     {
-        logfile.open(logfilepath, std::ios::app);
-        logfile << getCurrentTime() << ("[Warn] " + message + "\n").c_str();
-        logfile.close();
+        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Warn] " + message + "\n");
     }
-    void info(std::string message, bool newline, bool brackets)
+    void info(const std::string& message, bool newline, bool brackets)
     {
-        logfile.open(logfilepath, std::ios::app);
         std::string outStr = "";
         if(newline)
         {
             if(brackets)
             {
-                outStr = getCurrentTime() + ("[Info] " + message + "\n").c_str();
+                outStr = getCurrentTime() + "[Info] " + message + "\n";
             }
             else
             {
-                outStr = (message + "\n").c_str();
+                outStr = message + "\n";
             }
         }
         else
         {
             if(brackets)
             {
-                outStr = getCurrentTime() + ("[Info] " + message).c_str();
+                outStr = getCurrentTime() + "[Info] " + message;
             }
             else
             {
-                outStr = (message).c_str();
+                outStr = message;
             }
         }
         std::cout << outStr;
-        logfile << outStr;
-        logfile.close();
+        Gum::Filesystem::appendToFile(logfilepath, outStr);
     }
-    void debug(std::string message)
+    void debug(const std::string& message)
     {
         #ifdef DEBUG
-            logfile.open(Debuglogfilepath, std::ios::app);
-            logfile << getCurrentTime() << ("[Debug] " + message + "\n").c_str();
-            logfile.close();
-            std::cout << getCurrentTime() << "[Debug] " + message + "\n";
+            if(Debuglogfilepath != "")
+            {
+                Gum::Filesystem::appendToFile(Debuglogfilepath, "[Debug] " + message + "\n");
+                std::cout << getCurrentTime() << "[Debug] " + message + "\n";
+            }
         #endif
     }
 

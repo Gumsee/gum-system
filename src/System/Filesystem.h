@@ -25,17 +25,17 @@ namespace Filesystem {
         FILETYPE type;
     };
 
-    extern void readFileContents(std::string filepath, std::function<void(std::string line)> func);
-    extern std::string readFileContents(std::string filepath);
+    extern void readFileContents(const std::string& filepath, const std::function<void(std::string line)>& func);
+    extern std::string readFileContents(const std::string& filepath);
 
-    extern void writeToFile(std::string filepath, std::string str);
-    extern void appendToFile(std::string filepath, std::string str);
+    extern void writeToFile(const std::string& filepath, const std::string& str);
+    extern void appendToFile(const std::string& filepath, const std::string& str);
     
-    extern void iterateThroughDirectory(std::string directory, std::function<void(File entry)> func);
-    extern FILETYPE nativeTypeToFiletype(std::string path, unsigned long nativeData = 0);
-    extern std::string filetypeToString(FILETYPE type);
+    extern void iterateThroughDirectory(const std::string& directory, const std::function<void(File entry)>& func);
+    extern FILETYPE nativeTypeToFiletype(const std::string& path, const unsigned long& nativeData = 0);
+    extern std::string filetypeToString(const FILETYPE& type);
 
     extern std::string getExecutablePath();
 
-    extern std::string convertToNativePath(std::string path);
+    extern std::string convertToNativePath(const std::string& path);
 }}

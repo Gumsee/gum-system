@@ -8,20 +8,19 @@
 namespace Gum {
 namespace Output
 {
-    extern std::ofstream logfile;
     extern std::string logfilepath;
-    extern std::string Debuglogfilepath;
-    extern bool stoprunning;
-    extern clock_t t1,t2;
-	extern bool issuccessful;
+    inline std::string Debuglogfilepath = "";
+    inline bool stoprunning = false;
+    inline clock_t t1 = clock(), t2 = clock();
+	inline bool issuccessful = true;
 
-    extern void init(std::string logfilestr, std::string Debuglogfilestr = "");
-    extern void log(std::string message);
-    extern void error(std::string message);
-    extern void fatal(std::string message);
-    extern void warn(std::string message);
-    extern void info(std::string message, bool newline = true, bool brackets = true);
-    extern void debug(std::string message);
+    extern void init(const std::string& logfilestr = "", const std::string& Debuglogfilestr = "");
+    extern void log(const std::string& message);
+    extern void error(const std::string& message);
+    extern void fatal(const std::string& message);
+    extern void warn(const std::string& message);
+    extern void info(const std::string& message, bool newline = true, bool brackets = true);
+    extern void debug(const std::string& message);
 
     extern std::string getCurrentTime();
 	extern void Failed();

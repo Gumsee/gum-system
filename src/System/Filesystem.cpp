@@ -30,7 +30,7 @@
 
 namespace Gum {
 namespace Filesystem {
-    void readFileContents(std::string filepath, std::function<void(std::string line)> func)
+    void readFileContents(const std::string& filepath, const std::function<void(std::string line)>& func)
     {
         std::ifstream filestream;
         filestream.open(filepath, std::ios::in);
@@ -40,7 +40,7 @@ namespace Filesystem {
         filestream.close();
     }
 
-    std::string readFileContents(std::string filepath)
+    std::string readFileContents(const std::string& filepath)
     {
         std::string contents = "";
         readFileContents(filepath, [&contents](std::string line) {
@@ -50,18 +50,16 @@ namespace Filesystem {
         return contents.substr(0, contents.length() - 1); //Get rid of that extra newline 
     }
 
-    void writeToFile(std::string filepath, std::string str)
+    void writeToFile(const std::string& filepath, const std::string& str)
     {
-        std::ofstream filestream;
-        filestream.open(filepath, std::ios::out);
+        std::ofstream filestream(filepath, std::ios::out);
         filestream << str;
         filestream.close();
     }
 
-    void appendToFile(std::string filepath, std::string str)
+    void appendToFile(const std::string& filepath, const std::string& str)
     {
-        std::ofstream filestream;
-        filestream.open(filepath, std::ios::app);
+        std::ofstream filestream(filepath, std::ios::app);
         filestream << str;
         filestream.close();
     }
@@ -111,7 +109,7 @@ namespace Filesystem {
         return exePathStr;
     }
 
-    void iterateThroughDirectory(std::string directory, std::function<void(File entry)> func)
+    void iterateThroughDirectory(const std::string& directory, const std::function<void(File entry)>& func)
     {
         #if (GUM_OS_WINDOWS)
             WIN32_FIND_DATA w32FindData;
@@ -161,7 +159,7 @@ namespace Filesystem {
         #endif
     }
 
-    FILETYPE nativeTypeToFiletype(std::string path, unsigned long nativeData)
+    FILETYPE nativeTypeToFiletype(const std::string& path, const unsigned long& nativeData)
     {
         #if (GUM_OS_WINDOWS)
             if     (nativeData & FILE_ATTRIBUTE_DIRECTORY)     { return FILETYPE::DIRECTORY; }
@@ -194,7 +192,7 @@ namespace Filesystem {
         return FILETYPE::UNKNOWN;
     }
 
-    std::string filetypeToString(FILETYPE type)
+    std::string filetypeToString(const FILETYPE& type)
     {
         switch (type) 
         {
@@ -209,7 +207,7 @@ namespace Filesystem {
         };
     }
     
-    std::string convertToNativePath(std::string path)
+    std::string convertToNativePath(const std::string& path)
     {
         std::string retPath = path;
         #if (GUM_OS_WINDOWS)

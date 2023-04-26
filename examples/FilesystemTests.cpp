@@ -3,6 +3,7 @@
 
 int main(int argc, char** argv)
 {
+    Gum::Output::info("kek");
 	Gum::Output::print("#");
 	Gum::Output::print("# Filesystem Testing:");
 	Gum::Output::print("#");
