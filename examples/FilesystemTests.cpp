@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     std::string projDir = Gum::Filesystem::convertToNativePath(std::string(EXAMPLES_PATH) + "/..");
     Gum::Output::print("Project directory contents ("+projDir+"):");
     Gum::Filesystem::iterateThroughDirectory(projDir, [](Gum::Filesystem::File file) {
-        Gum::Output::print("    " + file.name + " (" + Gum::Filesystem::filetypeToString(file.type) + ")");
+        Gum::Output::print("    " + file.getName() + " (" + Gum::Filesystem::filetypeToString(file.getType()) + ")");
     });
 
 	return 0;

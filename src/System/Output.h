@@ -1,5 +1,6 @@
 #pragma once
 #include <Maths/vec.h>
+#include <Maths/mat.h>
 #include <string>
 #include <fstream>
 #include <time.h>
@@ -27,13 +28,19 @@ namespace Output
 	extern bool wasSuccessful();
 
     template<typename T>
-    static inline void print(T printable)
+    static inline void print(const T& printable)
     {
         std::cout << getCurrentTime() << " " << printable << "\n";
     }
 
     template<typename T, unsigned int S> 
     static inline void print(tvec<T, S> printable) 
+    { 
+        std::cout << getCurrentTime() << " " << printable.toString() << "\n"; 
+    }
+
+    template<typename T, unsigned int N, unsigned int M> 
+    static inline void print(mat<T, N, M> printable) 
     { 
         std::cout << getCurrentTime() << " " << printable.toString() << "\n"; 
     }

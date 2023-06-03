@@ -148,10 +148,8 @@ namespace Filesystem {
                 std::string name = pDirent->d_name;
                 if(name == ".." || name == ".") { continue; }
                 
-                File file;
-                file.type = nativeTypeToFiletype(directory + "/" + name, type);
-                file.path = directory;
-                file.name = name;
+                std::string path = directory + "/" + name;
+                File file(path, nativeTypeToFiletype(path, type));
                 func(file);
             }
 
@@ -159,7 +157,7 @@ namespace Filesystem {
         #endif
     }
 
-    FILETYPE nativeTypeToFiletype(const std::string& path, const unsigned long& nativeData)
+    Filetype nativeTypeToFiletype(const std::string& path, const unsigned long& nativeData)
     {
         #if (GUM_OS_WINDOWS)
             if     (nativeData & FILE_ATTRIBUTE_DIRECTORY)     { return FILETYPE::DIRECTORY; }
@@ -168,41 +166,41 @@ namespace Filesystem {
             else                                               { return FILETYPE::FILE; }
         #elif (GUM_OS_LINUX)
             unsigned char type = nativeData;
-            if     (type == DT_DIR)  { return FILETYPE::DIRECTORY; }
-            else if(type == DT_REG)  { return FILETYPE::FILE; }
-            else if(type == DT_FIFO) { return FILETYPE::FIFO; }
-            else if(type == DT_BLK)  { return FILETYPE::BLOCK_DEVICE; }
-            else if(type == DT_CHR)  { return FILETYPE::CHARACTER_DEVICE; }
-            else if(type == DT_LNK)  { return FILETYPE::LINK; }
-            else if(type == DT_SOCK) { return FILETYPE::SOCKET; }
+            if     (type == DT_DIR)  { return Filetype::DIRECTORY; }
+            else if(type == DT_REG)  { return Filetype::FILE; }
+            else if(type == DT_FIFO) { return Filetype::FIFO; }
+            else if(type == DT_BLK)  { return Filetype::BLOCK_DEVICE; }
+            else if(type == DT_CHR)  { return Filetype::CHARACTER_DEVICE; }
+            else if(type == DT_LNK)  { return Filetype::LINK; }
+            else if(type == DT_SOCK) { return Filetype::SOCKET; }
             else 
             {
                 struct stat retstat;
                 lstat((path).c_str(), &retstat);
-                if     (S_ISREG(retstat.st_mode))  { return FILETYPE::FILE; }
-                else if(S_ISDIR(retstat.st_mode))  { return FILETYPE::DIRECTORY; }
-                else if(S_ISFIFO(retstat.st_mode)) { return FILETYPE::FIFO; }
-                else if(S_ISLNK(retstat.st_mode))  { return FILETYPE::LINK; }
-                else if(S_ISSOCK(retstat.st_mode)) { return FILETYPE::SOCKET; }
-                else if(S_ISBLK(retstat.st_mode))  { return FILETYPE::BLOCK_DEVICE; }
-                else if(S_ISCHR(retstat.st_mode))  { return FILETYPE::CHARACTER_DEVICE; }
+                if     (S_ISREG(retstat.st_mode))  { return Filetype::FILE; }
+                else if(S_ISDIR(retstat.st_mode))  { return Filetype::DIRECTORY; }
+                else if(S_ISFIFO(retstat.st_mode)) { return Filetype::FIFO; }
+                else if(S_ISLNK(retstat.st_mode))  { return Filetype::LINK; }
+                else if(S_ISSOCK(retstat.st_mode)) { return Filetype::SOCKET; }
+                else if(S_ISBLK(retstat.st_mode))  { return Filetype::BLOCK_DEVICE; }
+                else if(S_ISCHR(retstat.st_mode))  { return Filetype::CHARACTER_DEVICE; }
             }
         #endif
 
-        return FILETYPE::UNKNOWN;
+        return Filetype::UNKNOWN;
     }
 
-    std::string filetypeToString(const FILETYPE& type)
+    std::string filetypeToString(const Filetype& type)
     {
         switch (type) 
         {
-            case FILETYPE::DIRECTORY:        return "directory";
-            case FILETYPE::FILE:             return "file";
-            case FILETYPE::FIFO:             return "fifo";
-            case FILETYPE::BLOCK_DEVICE:     return "block device";
-            case FILETYPE::CHARACTER_DEVICE: return "character device";
-            case FILETYPE::LINK:             return "link";
-            case FILETYPE::SOCKET:           return "socket";
+            case Filetype::DIRECTORY:        return "directory";
+            case Filetype::FILE:             return "file";
+            case Filetype::FIFO:             return "fifo";
+            case Filetype::BLOCK_DEVICE:     return "block device";
+            case Filetype::CHARACTER_DEVICE: return "character device";
+            case Filetype::LINK:             return "link";
+            case Filetype::SOCKET:           return "socket";
             default:                         return "unknown";
         };
     }

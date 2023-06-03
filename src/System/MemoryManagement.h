@@ -14,6 +14,14 @@ namespace Gum
         ptr = nullptr;
     }
 
+    template<typename T>
+    void _delete(void*& ptr)
+    {
+        if(ptr != nullptr)
+            delete (T*)ptr;
+        ptr = nullptr;
+    }
+
 
     inline void* _malloc(size_t nbytes)
     {
