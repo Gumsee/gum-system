@@ -1,4 +1,6 @@
 #pragma once
+#include "File.h"
+#include "Filesystem.h"
 #include <Maths/vec.h>
 #include <Maths/mat.h>
 #include <string>
@@ -9,13 +11,13 @@
 namespace Gum {
 namespace Output
 {
-    extern std::string logfilepath;
-    inline std::string Debuglogfilepath = "";
+    extern Filesystem::File logFile;
+    extern Filesystem::File debuglogFile;
     inline bool stoprunning = false;
     inline clock_t t1 = clock(), t2 = clock();
 	inline bool issuccessful = true;
 
-    extern void init(const std::string& logfilestr = "", const std::string& Debuglogfilestr = "");
+    extern void init(const Filesystem::File& logfilestr = Filesystem::File(Gum::Filesystem::getExecutablePath().toString() + "/gum.log"), const Filesystem::File& Debuglogfilestr = Filesystem::File("", Filesystem::Filetype::UNKNOWN));
     extern void log(const std::string& message);
     extern void error(const std::string& message);
     extern void fatal(const std::string& message);

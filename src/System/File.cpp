@@ -39,16 +39,6 @@ File::File(const std::string& str, const Filetype& type)
         push_back(word);
 }
 
-std::string File::toString()
-{
-    std::string pathstr = bIsAbsolute ? "/" : "";
-    for(std::string part : *this)
-        pathstr += part + "/";
-    if(iType != DIRECTORY && pathstr.length() > 0)
-        pathstr.erase(pathstr.length() - 1);
-    return pathstr;
-}
-
 File* File::up()
 {
     if(size() > 0)
@@ -70,24 +60,17 @@ File* File::add(const File& path)
     return this;
 }
 
-std::string File::getName()
+std::string File::getName() const { return this->at(size() - 1); }
+Filetype File::getType() const    { return this->iType; }
+bool File::isAbsolute() const     { return this->bIsAbsolute; }
+std::string File::toString() const
 {
-    return at(size() - 1);
-}
-
-Filetype File::getType()
-{
-    return iType;
-}
-
-std::string& File::operator[](size_t i)
-{
-    return at(i);
-}
-
-bool File::isAbsolute()
-{
-    return bIsAbsolute;
+    std::string pathstr = bIsAbsolute ? "/" : "";
+    for(std::string part : *this)
+        pathstr += part + "/";
+    if(iType != DIRECTORY && pathstr.length() > 0)
+        pathstr.erase(pathstr.length() - 1);
+    return pathstr;
 }
 
 }}

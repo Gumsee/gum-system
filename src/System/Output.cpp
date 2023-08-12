@@ -1,48 +1,50 @@
 #include "Output.h"
+#include "File.h"
 #include "Filesystem.h"
 #define DEBUG 1
 
 namespace Gum {
 namespace Output
 {
-    std::string logfilepath = Gum::Filesystem::getExecutablePath() + "/gum.log";
+    Filesystem::File logFile(Gum::Filesystem::getExecutablePath().toString() + "/gum.log");
+    Filesystem::File debuglogFile("", Filesystem::UNKNOWN);
 
-    void init(const std::string& logfilestr, const std::string& Debuglogfilestr)
+    void init(const Filesystem::File& logfile, const Filesystem::File& debuglogfile)
     {
-        Debuglogfilepath = Debuglogfilestr;
-        logfilepath = logfilestr;
+        logFile = logfile;
+        debuglogFile = debuglogfile;
 
-        if(logfilepath == "")
-            logfilepath = Gum::Filesystem::getExecutablePath() + "/gum.log";
-        Gum::Filesystem::writeToFile(logfilepath, "--- Default logfile Start ---\n");
+        if(logFile.getType() != Filesystem::Filetype::FILE)
+            logFile = Filesystem::File(Gum::Filesystem::getExecutablePath().toString() + "/gum.log");
+        Gum::Filesystem::writeToFile(logFile, "--- Default logfile Start ---\n");
 
-        if(Debuglogfilepath != "")
-            Gum::Filesystem::writeToFile(Debuglogfilepath, "--- Debug logfile start ---\n");
+        if(debuglogFile.getType() == Filesystem::Filetype::FILE)
+            Gum::Filesystem::writeToFile(debuglogFile, "--- Debug logfile start ---\n");
 
     }
 
     void log(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Info] " + message + "\n");
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Info] " + message + "\n");
     }
 
     void error(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Error] " + message + "\n");
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Error] " + message + "\n");
         std::cerr << getCurrentTime() << " Error " + message + "\n";
         stoprunning = true;
     }
 
     void fatal(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Fatal] " + message + "\n");
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Fatal] " + message + "\n");
         std::cout << getCurrentTime() << "[Fatal] " + message + "\n";
         stoprunning = true;
     }
 
     void warn(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logfilepath, getCurrentTime() + "[Warn] " + message + "\n");
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Warn] " + message + "\n");
     }
     void info(const std::string& message, bool newline, bool brackets)
     {
@@ -70,14 +72,14 @@ namespace Output
             }
         }
         std::cout << outStr;
-        Gum::Filesystem::appendToFile(logfilepath, outStr);
+        Gum::Filesystem::appendToFile(logFile, outStr);
     }
     void debug(const std::string& message)
     {
         #ifdef DEBUG
-            if(Debuglogfilepath != "")
+            if(debuglogFile.getType() == Filesystem::Filetype::FILE)
             {
-                Gum::Filesystem::appendToFile(Debuglogfilepath, "[Debug] " + message + "\n");
+                Gum::Filesystem::appendToFile(debuglogFile, "[Debug] " + message + "\n");
                 std::cout << getCurrentTime() << "[Debug] " + message + "\n";
             }
         #endif

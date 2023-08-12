@@ -1,5 +1,4 @@
 #pragma once
-#include "Output.h"
 #include <vector>
 #include <string>
 
@@ -30,15 +29,16 @@ public:
     File();
     File(const std::string& str, const Filetype& type = FILE);
 
-    std::string toString();
     File* up();
     File* add(const File& path);
 
+    using std::vector<std::string>::operator[];
+
     //Getter
-    std::string getName();
-    Filetype getType();
-    std::string& operator[](size_t i);
-    bool isAbsolute();
+    std::string getName() const;
+    Filetype getType() const;
+    bool isAbsolute() const;
+    std::string toString() const;
 };
 
 }}

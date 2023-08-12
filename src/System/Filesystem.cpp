@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "File.h"
 #include "Output.h"
 #include <algorithm>
 
@@ -30,41 +31,53 @@
 
 namespace Gum {
 namespace Filesystem {
-    void readFileContents(const std::string& filepath, const std::function<void(std::string line)>& func)
+    void readFileContents(const File& file, const std::function<void(std::string line)>& func)
     {
+        if(file.getType() != Filetype::FILE)
+            return;
+
         std::ifstream filestream;
-        filestream.open(filepath, std::ios::in);
+        filestream.open(file.toString(), std::ios::in);
         std::string line = "";
         while(std::getline(filestream, line))
             func(line);
         filestream.close();
     }
 
-    std::string readFileContents(const std::string& filepath)
+    std::string readFileContents(const File& file)
     {
+        if(file.getType() != Filetype::FILE)
+            return "";
+
         std::string contents = "";
-        readFileContents(filepath, [&contents](std::string line) {
+        readFileContents(file.toString(), [&contents](std::string line) {
             contents.append(line + "\n");
         });
 
         return contents.substr(0, contents.length() - 1); //Get rid of that extra newline 
     }
 
-    void writeToFile(const std::string& filepath, const std::string& str)
+    void writeToFile(const File& file, const std::string& str)
     {
-        std::ofstream filestream(filepath, std::ios::out);
+        if(file.getType() != Filetype::FILE)
+            return;
+
+        std::ofstream filestream(file.toString(), std::ios::out);
         filestream << str;
         filestream.close();
     }
 
-    void appendToFile(const std::string& filepath, const std::string& str)
+    void appendToFile(const File& file, const std::string& str)
     {
-        std::ofstream filestream(filepath, std::ios::app);
+        if(file.getType() != Filetype::FILE)
+            return;
+
+        std::ofstream filestream(file.toString(), std::ios::app);
         filestream << str;
         filestream.close();
     }
 
-    std::string getExecutablePath()
+    File getExecutablePath()
     {
         #if (GUM_OS_WINDOWS)
             char exePath[MAX_PATH];
@@ -109,12 +122,12 @@ namespace Filesystem {
         return exePathStr;
     }
 
-    void iterateThroughDirectory(const std::string& directory, const std::function<void(File entry)>& func)
+    void iterateThroughDirectory(const File& directory, const std::function<void(File entry)>& func)
     {
         #if (GUM_OS_WINDOWS)
             WIN32_FIND_DATA w32FindData;
             HANDLE hFind;
-            hFind = FindFirstFile((directory + "/*.*").c_str(), &w32FindData);
+            hFind = FindFirstFile((directory.toString() + "/*.*").c_str(), &w32FindData);
             if(hFind == INVALID_HANDLE_VALUE)
             {
                 Gum::Output::error("FindFirstFile failed: " + GetLastError());
@@ -127,8 +140,8 @@ namespace Filesystem {
                 if(name == ".." || name == ".") { continue; }
 
                 File file;
-                file.type = nativeTypeToFiletype(directory + "\\" + name, w32FindData.dwFileAttributes);
-                file.path = directory;
+                file.type = nativeTypeToFiletype(directory.toString() + "\\" + name, w32FindData.dwFileAttributes);
+                file.path = directory.toString();
                 file.name = name;
                 func(file);
             }
@@ -137,7 +150,7 @@ namespace Filesystem {
             FindClose(hFind);
         #elif (GUM_OS_LINUX)
             struct dirent *pDirent = nullptr;
-            DIR *pDir = opendir(directory.c_str());
+            DIR *pDir = opendir(directory.toString().c_str());
 
             if (pDir == nullptr)
                 return;
@@ -148,7 +161,7 @@ namespace Filesystem {
                 std::string name = pDirent->d_name;
                 if(name == ".." || name == ".") { continue; }
                 
-                std::string path = directory + "/" + name;
+                std::string path = directory.toString() + "/" + name;
                 File file(path, nativeTypeToFiletype(path, type));
                 func(file);
             }

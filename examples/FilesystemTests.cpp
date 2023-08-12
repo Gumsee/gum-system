@@ -1,3 +1,4 @@
+#include "System/File.h"
 #include <System/Filesystem.h>
 #include <System/Output.h>
 
@@ -8,8 +9,8 @@ int main(int argc, char** argv)
 	Gum::Output::print("# Filesystem Testing:");
 	Gum::Output::print("#");
 
-    std::string execDir = Gum::Filesystem::getExecutablePath();
-	Gum::Output::print("Current Executable directory: " + execDir);
+    Gum::Filesystem::File execDir = Gum::Filesystem::getExecutablePath();
+	Gum::Output::print("Current Executable directory: " + execDir.toString());
 
     std::string projDir = Gum::Filesystem::convertToNativePath(std::string(EXAMPLES_PATH) + "/..");
     Gum::Output::print("Project directory contents ("+projDir+"):");
