@@ -34,7 +34,7 @@ install(
 
 set(COMBINED_LIB ${CMAKE_BINARY_DIR}/lib${PROJECT_NAME}.a)
 
-add_custom_target(createcombineddir
+add_custom_target(${PROJECT_NAME}_createcombineddir
     COMMAND mkdir -p ${CMAKE_BINARY_DIR}/combined/
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/
     DEPENDS ${PROJECT_NAME}_trgt
@@ -47,7 +47,7 @@ add_custom_command( #combinedtarget ALL
     COMMAND ar -x $<TARGET_FILE:${PROJECT_NAME}_trgt>
     COMMAND sh -c "ar -qcs \"${COMBINED_LIB}\" *.o"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/combined/
-    DEPENDS  createcombineddir ${PROJECT_NAME}_trgt
+    DEPENDS  ${PROJECT_NAME}_createcombineddir ${PROJECT_NAME}_trgt
     COMMENT "Combining libs"
     VERBATIM
 )
