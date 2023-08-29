@@ -1,29 +1,29 @@
 #include "Curses.h"
-#include <curses.h>
-#include <ncurses.h>
+//#include <curses.h>
+//#include <ncurses.h>
 
 Curses::Curses()
 {
-    initscr();
+    /*initscr();
     update();
-    cbreak();
+    cbreak();*/
 }
 
 Curses::~Curses()
 {
-    endwin();
+    //endwin();
 }
 
 void Curses::update()
 {
-    refresh();
-    getch();
-    getmaxyx(stdscr, v2ConsoleSize.x, v2ConsoleSize.y);
+    //refresh();
+    //getch();
+    //getmaxyx(stdscr, v2ConsoleSize.x, v2ConsoleSize.y);
 }
 
 void Curses::printAt(std::string msg, ivec2 pos)
 {
-    mvprintw(pos.x, pos.y, "%s", msg.c_str());
+    //mvprintw(pos.x, pos.y, "%s", msg.c_str());
 }
 
 
@@ -32,10 +32,10 @@ void Curses::printAt(std::string msg, ivec2 pos)
 // 
 void hideInput(bool hide)
 {
-    if(hide)
+    /*if(hide)
         noecho();
     else
-        echo();
+        echo();*/
 }
 
 //
