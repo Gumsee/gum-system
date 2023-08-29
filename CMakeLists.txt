@@ -58,10 +58,6 @@ message(STATUS "${PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
     
         if(NOT GUMMATHS_FOUND) 
             find_package(GumMaths REQUIRED)
-        endif() 
-    
-        if(NOT CURSES_FOUND) 
-            find_package(Curses REQUIRED)
         endif()
 
 #add_definitions(-DDEBUG)
