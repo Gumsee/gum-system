@@ -3,7 +3,7 @@ message(STATUS "Examples: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
  
-        list(APPEND GUM_LIBRARIES ${CMAKE_PROJECT_NAME}) 
+        list(APPEND GUM_LIBRARIES ${PROJECT_NAME}) 
         if(GUMMATHS_FOUND)
             list(APPEND GUM_LIBRARIES ${GUMMATHS_LIBRARIES})
         else()
@@ -17,12 +17,12 @@ list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/)
  
-        if(GUMMATHS_FOUND)
+    if(GUMMATHS_FOUND)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
         else()
             message(FATAL_ERROR Library for GUMMATHS cannot not found)
         endif() 
-        if(CURSES_FOUND)
+    if(CURSES_FOUND)
             include_directories(${CURSES_INCLUDE_DIRS})
         else()
             message(FATAL_ERROR Library for CURSES cannot not found)
