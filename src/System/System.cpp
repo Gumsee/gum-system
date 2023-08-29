@@ -1,6 +1,6 @@
 #include "System.h"
 
-#if(GUM_OS_LINUX)
+#if(GUM_OS_UNIX)
 #include <signal.h>
 #include <dlfcn.h>
 
