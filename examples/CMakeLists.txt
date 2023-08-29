@@ -15,7 +15,7 @@ list(APPEND GUM_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
             message(FATAL_ERROR Library for CURSES cannot not found)
         endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/src/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/)
  
     if(GUMMATHS_FOUND)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
