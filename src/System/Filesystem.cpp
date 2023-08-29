@@ -15,7 +15,7 @@
     #include <stdlib.h>
     #include <limits.h>
 
-#elif(GUM_OS_LINUX)
+#elif(GUM_OS_LINUX || GUM_OS_ANDROID)
     #include <unistd.h>
     #include <limits.h>
     #include <dirent.h>
@@ -90,7 +90,7 @@ namespace Filesystem {
             char exePath[PATH_MAX];
             if (realpath(getexecname(), exePath) == NULL)
                 exePath[0] = '\0';
-        #elif (GUM_OS_LINUX)
+        #elif (GUM_OS_LINUX || GUM_OS_ANDROID)
             char exePath[PATH_MAX];
             ssize_t len = readlink("/proc/self/exe", exePath, sizeof(exePath));
             if (len == -1 || len == sizeof(exePath))
@@ -148,7 +148,7 @@ namespace Filesystem {
             while(FindNextFile(hFind, &w32FindData));
 
             FindClose(hFind);
-        #elif (GUM_OS_LINUX)
+        #elif (GUM_OS_LINUX || GUM_OS_ANDROID)
             struct dirent *pDirent = nullptr;
             DIR *pDir = opendir(directory.toString().c_str());
 
@@ -177,7 +177,7 @@ namespace Filesystem {
             else if(nativeData & FILE_ATTRIBUTE_DEVICE)        { return FILETYPE::CHARACTER_DEVICE; }
             else if(nativeData & FILE_ATTRIBUTE_REPARSE_POINT) { return FILETYPE::LINK; }
             else                                               { return FILETYPE::FILE; }
-        #elif (GUM_OS_LINUX)
+        #elif (GUM_OS_LINUX || GUM_OS_ANDROID)
             unsigned char type = nativeData;
             if     (type == DT_DIR)  { return Filetype::DIRECTORY; }
             else if(type == DT_REG)  { return Filetype::FILE; }
