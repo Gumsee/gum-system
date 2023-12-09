@@ -119,7 +119,7 @@ namespace Filesystem {
         std::string exePathStr = std::string(exePath);
         exePathStr = exePathStr.substr(0, exePathStr.find_last_of('/'));
         exePathStr = exePathStr.substr(0, exePathStr.find_last_of('\\'));
-        return exePathStr;
+        return File(exePathStr, DIRECTORY);
     }
 
     void iterateThroughDirectory(const File& directory, const std::function<void(File entry)>& func)
