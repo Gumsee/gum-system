@@ -1,2 +1,2 @@
 # gum-system
-Gumball module used to create Discord Bots
+Gumball module used for memory management and basic IO functions

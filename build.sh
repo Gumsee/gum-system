@@ -24,4 +24,4 @@ done
 cd "$ROOTDIR"
 cp "$ROOTDIR/build/release/compile_commands.json" .
 
-echo Finished creation of: gum-discord
+echo Finished creation of: gum-system

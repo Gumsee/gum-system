@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-project(GumDiscord)
+project(GumSystem)
 cmake_policy(SET CMP0072 NEW)
 cmake_policy(SET CMP0090 NEW)
 set(CMAKE_EXPORT_PACKAGE_REGISTRY TRUE)
@@ -7,7 +7,7 @@ set(CMAKE_EXPORT_PACKAGE_REGISTRY TRUE)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-option(GUMDISCORD_BUILD_EXAMPLES "Should the exampleprojects be build" ON)
+option(GUMSYSTEM_BUILD_EXAMPLES "Should the exampleprojects be build" ON)
 
 #Set OS
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -64,18 +64,6 @@ message(STATUS "${PROJECT_NAME}: CXXFLAGS: ${CMAKE_CXX_FLAGS}")
 
  
     
-        if(NOT GUMSYSTEM_FOUND) 
-            find_package(GumSystem REQUIRED)
-        endif() 
-    
-        if(NOT GUMESSENTIALS_FOUND) 
-            find_package(GumEssentials REQUIRED)
-        endif() 
-    
-        if(NOT GUMNETWORK_FOUND) 
-            find_package(GumNetwork REQUIRED)
-        endif() 
-    
         if(NOT GUMMATHS_FOUND) 
             find_package(GumMaths REQUIRED)
         endif()
@@ -86,7 +74,7 @@ add_definitions(-DCHECK_GL_ERRORS)
 
 
 add_subdirectory(src)
-if(GUMDISCORD_BUILD_EXAMPLES)
+if(GUMSYSTEM_BUILD_EXAMPLES)
     add_subdirectory(examples)
     endif()
     

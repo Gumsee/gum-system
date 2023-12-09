@@ -7,42 +7,26 @@ file(GLOB_RECURSE SRC
 )
 add_library(${PROJECT_NAME}_trgt STATIC ${SRC})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../external/)
+include_directories(${CMAKE_SOURCE_DIR}/external/)
 
  
-    if(GUMSYSTEM_FOUND)
-            include_directories(${GUMSYSTEM_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for GUMSYSTEM cannot not found)
-        endif() 
-    if(GUMESSENTIALS_FOUND)
-            include_directories(${GUMESSENTIALS_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for GUMESSENTIALS cannot not found)
-        endif() 
-    if(GUMNETWORK_FOUND)
-            include_directories(${GUMNETWORK_INCLUDE_DIRS})
-        else()
-            message(FATAL_ERROR Library for GUMNETWORK cannot not found)
-        endif() 
     if(GUMMATHS_FOUND)
             include_directories(${GUMMATHS_INCLUDE_DIRS})
         else()
             message(FATAL_ERROR Library for GUMMATHS cannot not found)
-        endif() 
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../external/)
+        endif()
 
  
 
 install(
-    FILES gum-discord.h
+    FILES gum-system.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/
 ) 
 
-file(GLOB HEADERS Discord/*.h)
+file(GLOB HEADERS System/*.h)
 install(
     FILES ${HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Discord/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/System/
 )
 
 
