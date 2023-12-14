@@ -39,6 +39,9 @@ public:
     Filetype getType() const;
     bool isAbsolute() const;
     std::string toString() const;
+
+    File operator+(const File& other);
+    void operator+=(const File& other);
 };
 
 }}

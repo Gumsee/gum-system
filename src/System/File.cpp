@@ -73,4 +73,14 @@ std::string File::toString() const
     return pathstr;
 }
 
+File File::operator+(const File& other)
+{
+    return *File(*this).add(other);
+}
+
+void File::operator+=(const File& other)
+{
+    this->add(other);
+}
+
 }}

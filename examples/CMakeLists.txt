@@ -20,7 +20,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src/)
 
 link_directories(${CMAKE_BINARY_DIR}/src/)
 
-add_definitions(-DEXAMPLES_PATH=\"${CMAKE_SOURCE_DIR}/examples\")
+add_definitions(-DEXAMPLES_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/../examples\")
 
 set(EXAMPLE_FILE_LIST FilesystemTests)
 
