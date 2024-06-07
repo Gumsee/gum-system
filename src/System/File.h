@@ -21,7 +21,7 @@ enum Filetype
 class File : private std::vector<std::string>
 {
 private:
-    inline static const std::string problematicChars = "\"<>:\\/|?*";
+    inline static const std::string problematicChars = "\"<>:|?*";
     Filetype iType;
     bool bIsAbsolute;
 
@@ -38,10 +38,15 @@ public:
     std::string getName() const;
     Filetype getType() const;
     bool isAbsolute() const;
+    bool isEmpty() const;
     std::string toString() const;
 
     File operator+(const File& other);
+    File operator+(const std::string& other);
     void operator+=(const File& other);
 };
 
-}}
+}
+
+typedef Filesystem::File File;
+}

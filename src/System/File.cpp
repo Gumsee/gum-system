@@ -1,5 +1,7 @@
 #include "File.h"
+#include "Filesystem.h"
 #include "Output.h"
+#include <cassert>
 
 namespace Gum {
 namespace Filesystem 
@@ -10,6 +12,7 @@ File::File()
 
 File::File(const std::string& str, const Filetype& type)
 {
+    assert(!str.empty());
     this->iType = type;
     this->bIsAbsolute = str[0] == '/' || str[0] == '\\';
 
@@ -63,9 +66,10 @@ File* File::add(const File& path)
 std::string File::getName() const { return this->at(size() - 1); }
 Filetype File::getType() const    { return this->iType; }
 bool File::isAbsolute() const     { return this->bIsAbsolute; }
+bool File::isEmpty() const        { return this->empty(); }
 std::string File::toString() const
 {
-    std::string pathstr = bIsAbsolute ? "/" : "";
+    std::string pathstr = bIsAbsolute ? "/" : "./";
     for(std::string part : *this)
         pathstr += part + "/";
     if(iType != DIRECTORY && pathstr.length() > 0)
@@ -73,6 +77,7 @@ std::string File::toString() const
     return pathstr;
 }
 
+File File::operator+(const std::string& other) { return this->operator+(File(other)); }
 File File::operator+(const File& other)
 {
     return *File(*this).add(other);

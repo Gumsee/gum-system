@@ -34,16 +34,4 @@ namespace Output
     {
         std::cout << getCurrentTime() << " " << printable << "\n";
     }
-
-    template<typename T, unsigned int S> 
-    static inline void print(tvec<T, S> printable) 
-    { 
-        std::cout << getCurrentTime() << " " << printable.toString() << "\n"; 
-    }
-
-    template<typename T, unsigned int N, unsigned int M> 
-    static inline void print(mat<T, N, M> printable) 
-    { 
-        std::cout << getCurrentTime() << " " << printable.toString() << "\n"; 
-    }
 }}

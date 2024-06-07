@@ -45,6 +45,7 @@ namespace Output
     void warn(const std::string& message)
     {
         Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Warn] " + message + "\n");
+        std::cerr << getCurrentTime() << " Warn " + message + "\n";
     }
     void info(const std::string& message, bool newline, bool brackets)
     {

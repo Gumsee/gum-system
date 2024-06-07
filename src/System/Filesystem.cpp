@@ -6,6 +6,15 @@
 #include "File.h"
 #include "Output.h"
 #include <algorithm>
+#if __cplusplus < 201703L // If the version of C++ is less than 17
+#include <experimental/filesystem>
+    // It was still in the experimental:: namespace
+    namespace fs = std::experimental::filesystem;
+#else
+#include <filesystem>
+    namespace fs = std::filesystem;
+#endif
+
 
 #if(GUM_OS_WINDOWS)
     #include <stdlib.h>
@@ -31,7 +40,7 @@
 
 namespace Gum {
 namespace Filesystem {
-    void readFileContents(const File& file, const std::function<void(std::string line)>& func)
+    void readFileContentsLineByLine(const File& file, const std::function<void(std::string line)>& func)
     {
         if(file.getType() != Filetype::FILE)
             return;
@@ -44,13 +53,31 @@ namespace Filesystem {
         filestream.close();
     }
 
+    void readFileContentsInChucksBin(const File& file, const unsigned int& chunksize, const std::function<bool(const char* data, const unsigned int& readbytes)>& func)
+    {
+        if(file.getType() != Filetype::FILE)
+            return;
+
+        std::ifstream filestream(file.toString(), std::ios::binary | std::ios::in);
+        char buffer[chunksize];
+
+        while(!filestream.eof()) 
+        {
+            filestream.read(&buffer[0], chunksize);
+            std::streamsize s = filestream.gcount();
+            if(!func(&buffer[0], s))
+                break;
+        }
+        filestream.close();
+    }
+
     std::string readFileContents(const File& file)
     {
         if(file.getType() != Filetype::FILE)
             return "";
 
         std::string contents = "";
-        readFileContents(file.toString(), [&contents](std::string line) {
+        readFileContentsLineByLine(file.toString(), [&contents](std::string line) {
             contents.append(line + "\n");
         });
 
@@ -74,6 +101,16 @@ namespace Filesystem {
 
         std::ofstream filestream(file.toString(), std::ios::app);
         filestream << str;
+        filestream.close();
+    }
+
+    void appendToFileBin(const File& file, const char* data, const unsigned int& length)
+    {
+        if(file.getType() != Filetype::FILE)
+            return;
+
+        std::ofstream filestream(file.toString(), std::ios::app | std::ios::binary);
+        filestream.write(&data[0], length);
         filestream.close();
     }
 
@@ -116,7 +153,7 @@ namespace Filesystem {
             if (sysctl(mib, 4, exePath, &len, NULL, 0) != 0)
                 exePath[0] = '\0';
         #endif
-        std::string exePathStr = std::string(exePath);
+        std::string exePathStr = "/" + std::string(exePath);
         exePathStr = exePathStr.substr(0, exePathStr.find_last_of('/'));
         exePathStr = exePathStr.substr(0, exePathStr.find_last_of('\\'));
         return File(exePathStr, DIRECTORY);
@@ -228,5 +265,40 @@ namespace Filesystem {
         #endif
 
         return retPath;
+    }
+
+    bool fileExists(const File& file)
+    {
+        if(file.getType() != Filetype::FILE)
+            return false;
+
+        std::ifstream infile(file.toString()); //Slow
+        return infile.good();
+    }
+
+    bool dirExists(const File& dir)
+    {
+        if(dir.getType() != Filetype::DIRECTORY)
+            return false;
+
+        struct stat info;
+
+        if(stat(dir.toString().c_str(), &info ) != 0)
+            return false;
+        else if(info.st_mode & S_IFDIR)
+            return true;
+
+        return false;
+    }
+
+    bool createDirectory(const File& dir)
+    {
+        if(dir.getType() != Filetype::DIRECTORY)
+        {
+            Gum::Output::error("Cannot create directory: " + dir.toString() + " is not of type directory");
+            return false;
+        }
+
+        return fs::create_directory(dir.toString());
     }
 }}
