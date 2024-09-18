@@ -25,4 +25,6 @@ namespace Filesystem {
     extern bool dirExists(const File& file);
 
     extern bool createDirectory(const File& dir);
+
+    extern bool execFile(const File& file, const std::function<void(std::string)>& callback);
 }}
