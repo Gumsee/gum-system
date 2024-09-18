@@ -33,6 +33,10 @@ File::File(const std::string& str, const Filetype& type)
                 word = "";
             }
         }
+        else if(c == '\n')
+        {
+            
+        }
         else
         {
             word += c;
