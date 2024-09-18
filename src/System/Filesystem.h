@@ -26,5 +26,5 @@ namespace Filesystem {
 
     extern bool createDirectory(const File& dir);
 
-    extern bool execFile(const File& file, const std::function<void(std::string)>& callback);
+    extern bool execFile(const File& file, std::vector<std::string> args, const std::function<void(std::string)>& callback);
 }}

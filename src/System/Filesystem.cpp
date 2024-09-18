@@ -302,22 +302,21 @@ namespace Filesystem {
         return fs::create_directory(dir.toString());
     }
 
-    bool execFile(const File& file, const std::function<void(std::string)>& callback)
+    bool execFile(const File& file, std::vector<std::string> args, const std::function<void(std::string)>& callback)
     {
         if(file.getType() != Filetype::FILE)
         {
             Gum::Output::error("Cannot execute file " + file.toString() + ", is not a file!");
             return false;
         }
-        if(!fileExists(file))
-        {
-            Gum::Output::error("Cannot execute file " + file.toString() + ", does not exist!");
-            return false;
-        }
+
+        std::string argstr = file.toString();
+        for(int i = 0; i < args.size(); i++)
+            argstr += " \""+args[i]+"\"";
 
         std::array<char, 128> buffer;
         std::string stdoutstr;
-        std::unique_ptr<::FILE, decltype(&pclose)> pipe(popen(file.toString().c_str(), "r"), pclose);
+        std::unique_ptr<::FILE, decltype(&pclose)> pipe(popen(argstr.c_str(), "r"), pclose);
 
         if(!pipe)
         {
