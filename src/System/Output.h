@@ -1,8 +1,6 @@
 #pragma once
 #include "File.h"
 #include "Filesystem.h"
-#include <Maths/vec.h>
-#include <Maths/mat.h>
 #include <string>
 #include <fstream>
 #include <time.h>
