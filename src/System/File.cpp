@@ -12,7 +12,11 @@ File::File()
 
 File::File(const std::string& str, const Filetype& type)
 {
-    assert(!str.empty());
+    //assert(!str.empty());
+    if(str.empty())
+    {
+        Gum::Output::error("File: Filepath empty!");
+    }
     this->iType = type;
     this->bIsAbsolute = str[0] == '/' || str[0] == '\\';
 

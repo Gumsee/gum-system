@@ -311,12 +311,12 @@ namespace Filesystem {
         }
 
         std::string argstr = file.toString();
-        for(int i = 0; i < args.size(); i++)
+        for(size_t i = 0; i < args.size(); i++)
             argstr += " \""+args[i]+"\"";
 
         std::array<char, 128> buffer;
         std::string stdoutstr;
-        std::unique_ptr<::FILE, decltype(&pclose)> pipe(popen(argstr.c_str(), "r"), pclose);
+        std::unique_ptr<::FILE, int(*)(::FILE*)> pipe(popen(argstr.c_str(), "r"), &pclose);
 
         if(!pipe)
         {
