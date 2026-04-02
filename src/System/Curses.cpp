@@ -21,7 +21,7 @@ void Curses::update()
     //getmaxyx(stdscr, v2ConsoleSize.x, v2ConsoleSize.y);
 }
 
-void Curses::printAt(std::string msg, ivec2 pos)
+void Curses::printAt([[maybe_unused]] std::string msg, [[maybe_unused]] ivec2 pos)
 {
     //mvprintw(pos.x, pos.y, "%s", msg.c_str());
 }
@@ -30,7 +30,7 @@ void Curses::printAt(std::string msg, ivec2 pos)
 //
 // Setter
 // 
-void hideInput(bool hide)
+void hideInput([[maybe_unused]] bool hide)
 {
     /*if(hide)
         noecho();

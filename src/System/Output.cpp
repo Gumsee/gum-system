@@ -1,6 +1,7 @@
 #include "Output.h"
 #include "File.h"
 #include "Filesystem.h"
+#include "Terminal.h"
 #define DEBUG 1
 
 namespace Gum {
@@ -25,27 +26,27 @@ namespace Output
 
     void log(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Info] " + message + "\n");
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[I] " + message + "\n");
     }
 
     void error(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Error] " + message + "\n");
-        std::cerr << getCurrentTime() << " Error " + message + "\n";
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[E] " + message + "\n");
+        std::cerr << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::LIGHT_RED << "[E] " << message << Terminal::COLORS::RESET << std::endl;
         stoprunning = true;
     }
 
     void fatal(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Fatal] " + message + "\n");
-        std::cout << getCurrentTime() << "[Fatal] " + message + "\n";
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[F] " + message + "\n");
+        std::cout << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::RED << "[F] " << message << Terminal::COLORS::RESET << std::endl;
         stoprunning = true;
     }
 
     void warn(const std::string& message)
     {
-        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[Warn] " + message + "\n");
-        std::cerr << getCurrentTime() << " Warn " + message + "\n";
+        Gum::Filesystem::appendToFile(logFile, getCurrentTime() + "[W] " + message + "\n");
+        std::cerr << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::YELLOW << "[W] " << message << Terminal::COLORS::RESET << std::endl;
     }
     void info(const std::string& message, bool newline, bool brackets)
     {
@@ -54,22 +55,22 @@ namespace Output
         {
             if(brackets)
             {
-                outStr = getCurrentTime() + "[Info] " + message + "\n";
+                outStr = Terminal::COLORS::GRAY + getCurrentTime() + Terminal::COLORS::LIGHT_GRAY + "[I] " + message + Terminal::COLORS::RESET + "\n";
             }
             else
             {
-                outStr = message + "\n";
+                outStr = Terminal::COLORS::LIGHT_GRAY + message + Terminal::COLORS::RESET + "\n";
             }
         }
         else
         {
             if(brackets)
             {
-                outStr = getCurrentTime() + "[Info] " + message;
+                outStr = Terminal::COLORS::GRAY + getCurrentTime() + Terminal::COLORS::LIGHT_GRAY + "[I] " + message + Terminal::COLORS::RESET;
             }
             else
             {
-                outStr = message;
+                outStr = Terminal::COLORS::LIGHT_GRAY + message + Terminal::COLORS::RESET;
             }
         }
         std::cout << outStr;
@@ -79,10 +80,8 @@ namespace Output
     {
         #ifdef DEBUG
             if(debuglogFile.getType() == Filesystem::Filetype::FILE)
-            {
-                Gum::Filesystem::appendToFile(debuglogFile, "[Debug] " + message + "\n");
-                std::cout << getCurrentTime() << "[Debug] " + message + "\n";
-            }
+              Gum::Filesystem::appendToFile(debuglogFile, "[D] " + message + "\n");
+            std::cout << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::GREEN << "[D] " << message << Terminal::COLORS::RESET << std::endl;
         #endif
     }
 
@@ -94,14 +93,19 @@ namespace Output
         return "[" + std::to_string(diff / CLOCKS_PER_SEC) + "]";
     }
 
-    void Failed()
+  void Failed()
 	{
 		issuccessful = false;
-		std::cout << "\033[1;31m /\\--------------------> [PROGRAM TERMINATED] <--------------------/\\\n \033[0m" << std::endl;
+		std::cout << Terminal::COLORS::RED << "/\\--------------------> [PROGRAM TERMINATED] <--------------------/\\\n" << Terminal::COLORS::RESET << std::endl;
 	}
 
 	bool wasSuccessful()
 	{
 		return issuccessful;
 	}
+
+  std::string getOutputSpacing()
+  {
+    return "              ";
+  }
 }}

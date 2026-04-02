@@ -6,6 +6,7 @@
 #include "File.h"
 #include "Output.h"
 #include <algorithm>
+#include "MemoryManagement.h"
 #if __cplusplus < 201703L // If the version of C++ is less than 17
 #include <experimental/filesystem>
     // It was still in the experimental:: namespace
@@ -53,22 +54,23 @@ namespace Filesystem {
         filestream.close();
     }
 
-    void readFileContentsInChucksBin(const File& file, const unsigned int& chunksize, const std::function<bool(const char* data, const unsigned int& readbytes)>& func)
+    void readFileContentsInChucksBin(const File& file, const size_t& chunksize, const std::function<bool(const char* data, const size_t& readbytes)>& func)
     {
         if(file.getType() != Filetype::FILE)
             return;
 
         std::ifstream filestream(file.toString(), std::ios::binary | std::ios::in);
-        char buffer[chunksize];
+        char* buffer = new char[chunksize];
 
         while(!filestream.eof()) 
         {
-            filestream.read(&buffer[0], chunksize);
+            filestream.read(buffer, chunksize);
             std::streamsize s = filestream.gcount();
-            if(!func(&buffer[0], s))
+            if(!func(buffer, s))
                 break;
         }
         filestream.close();
+        Gum::_delete(buffer);
     }
 
     std::string readFileContents(const File& file)
@@ -104,7 +106,7 @@ namespace Filesystem {
         filestream.close();
     }
 
-    void appendToFileBin(const File& file, const char* data, const unsigned int& length)
+    void appendToFileBin(const File& file, const char* data, const size_t& length)
     {
         if(file.getType() != Filetype::FILE)
             return;
@@ -215,7 +217,7 @@ namespace Filesystem {
             else if(nativeData & FILE_ATTRIBUTE_REPARSE_POINT) { return FILETYPE::LINK; }
             else                                               { return FILETYPE::FILE; }
         #elif (GUM_OS_LINUX || GUM_OS_ANDROID)
-            unsigned char type = nativeData;
+            unsigned long type = nativeData;
             if     (type == DT_DIR)  { return Filetype::DIRECTORY; }
             else if(type == DT_REG)  { return Filetype::FILE; }
             else if(type == DT_FIFO) { return Filetype::FIFO; }
