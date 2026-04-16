@@ -11,7 +11,7 @@ namespace Gum
     {
         if(ptr != nullptr)
             delete ptr;
-        ptr = nullptr;
+        //ptr = nullptr;
     }
 
     template<typename T>
@@ -19,6 +19,7 @@ namespace Gum
     {
         if(ptr != nullptr)
             delete (T*)ptr;
+        //
         ptr = nullptr;
     }
 
