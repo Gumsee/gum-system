@@ -6,12 +6,16 @@ add_library(${PROJECT_NAME} STATIC ${SRC})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../external/)
 
- 
-if(GUMMATHS_FOUND)
-  include_directories(${GUMMATHS_INCLUDE_DIRS})
-else()
-  message(FATAL_ERROR Library for GUMMATHS cannot not found)
-endif()
+
+macro(add_guminclude LIBNAME)
+  if(${LIBNAME}_FOUND)
+      include_directories(${${LIBNAME}_INCLUDE_DIRS})
+  else()
+      message(FATAL_ERROR "Library for ${LIBNAME} cannot not be found")
+  endif() 
+endmacro()
+
+add_guminclude(GUMMATHS)
 
  
 
