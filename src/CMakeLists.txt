@@ -3,6 +3,7 @@
 #
 file(GLOB_RECURSE SRC "${CMAKE_CURRENT_LIST_DIR}/*.cpp")
 add_library(${PROJECT_NAME} STATIC ${SRC})
+target_include_directories(${CMAKE_PROJECT_NAME} SYSTEM PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../external/)
 
