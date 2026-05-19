@@ -10,7 +10,14 @@ namespace Gum
     void _delete(T*& ptr)
     {
         if(ptr != nullptr)
-            delete ptr;
+            delete(ptr);
+        //ptr = nullptr;
+    }
+    template<typename T>
+    void _delete(T*& ptr, size_t len)
+    {
+        if(ptr != nullptr)
+            delete[] ptr;
         //ptr = nullptr;
     }
 

@@ -6,33 +6,65 @@
 #include <time.h>
 #include <iostream>
 #include "Terminal.h"
+#include <mutex>
+#include <sstream>
+
+#define guminfo  Gum::Output("[I]", Gum::Terminal::COLORS::LIGHT_GRAY)
+#define gumwarn  Gum::Output("[W]", Gum::Terminal::COLORS::YELLOW)
+#define gumerror Gum::Output("[E]", Gum::Terminal::COLORS::LIGHT_RED)
+#define gumfatal Gum::Output("[F]", Gum::Terminal::COLORS::RED)
+#define gumdebug Gum::Output("[D]", Gum::Terminal::COLORS::GREEN)
 
 namespace Gum {
-namespace Output
+class Output
 {
-    extern Filesystem::File logFile;
-    extern Filesystem::File debuglogFile;
-    inline bool stoprunning = false;
-    inline clock_t t1 = clock(), t2 = clock();
-	  inline bool issuccessful = true;
+private:
+  static inline Filesystem::File logFile;
+  static inline Filesystem::File debuglogFile;
+  static inline bool stoprunning = false;
+  static inline clock_t t1 = clock(), t2 = clock();
+  std::mutex oPrintMutex;
+  std::ostringstream oss;
 
-    extern void init(const Filesystem::File& logfilestr = Filesystem::File(Gum::Filesystem::getExecutablePath().toString() + "/gum.log"), const Filesystem::File& Debuglogfilestr = Filesystem::File("", Filesystem::Filetype::UNKNOWN));
-    extern void log(const std::string& message);
-    extern void error(const std::string& message);
-    extern void fatal(const std::string& message);
-    extern void warn(const std::string& message);
-    extern void info(const std::string& message, bool newline = true, bool brackets = true);
-    extern void debug(const std::string& message);
+public:
+  Output(const std::string& prefix = "", const std::string& col = "")
+  {
+    oss << Terminal::COLORS::GRAY << getCurrentTime() << col << " " << prefix << " ";
+  }
 
-    extern std::string getCurrentTime();
-    extern void Failed();
-    extern bool wasSuccessful();
+  template <class T>
+  Output &operator<<(const T &v)
+  {
+    oss << v;
+    return *this;
+  }
 
-    template<typename T>
-    static inline void print(const T& printable)
-    {
-        std::cout << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::RESET << " " << printable << std::endl;
-    }
+  ~Output()
+  {
+    oPrintMutex.lock();
+    oss << Terminal::COLORS::RESET << std::endl;
+    std::cout << oss.str();
+    oPrintMutex.unlock();
+  }
+  
+  static void log(const std::string& message);
+  static void error(const std::string& message);
+  static void fatal(const std::string& message);
+  static void warn(const std::string& message);
+  static void info(const std::string& message, bool newline = true, bool brackets = true);
+  static void debug(const std::string& message);
 
-    extern std::string getOutputSpacing();
-}}
+  static std::string getCurrentTime();
+  static void Failed();
+  static bool wasSuccessful();
+
+  template<typename T>
+  static inline void print(const T& printable)
+  {
+      std::cout << Terminal::COLORS::GRAY << getCurrentTime() << Terminal::COLORS::RESET << " " << printable << std::endl;
+  }
+
+  static std::string getOutputSpacing();
+};
+
+}

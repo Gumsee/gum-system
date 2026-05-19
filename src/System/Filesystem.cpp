@@ -70,7 +70,7 @@ namespace Filesystem {
                 break;
         }
         filestream.close();
-        Gum::_delete(buffer);
+        Gum::_delete(buffer, chunksize);
     }
 
     std::string readFileContents(const File& file)

@@ -22,7 +22,10 @@ link_directories(${CMAKE_BINARY_DIR}/src/)
 
 add_definitions(-DEXAMPLES_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/../examples\")
 
-set(EXAMPLE_FILE_LIST FilesystemTests)
+set(EXAMPLE_FILE_LIST 
+  FilesystemTests
+  ThreadPool
+)
 
 foreach(EXAMPLE ${EXAMPLE_FILE_LIST})
     message(STATUS "Adding target ${EXAMPLE}")
